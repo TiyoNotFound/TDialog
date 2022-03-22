@@ -3,7 +3,7 @@ Simple dialog usage and functions.
 This is created for entertainment and testing a 
 framework.
 
-
+# Usage
 Filterscript Use
 ```
 #define TDialog_FILTERSCRIPT
@@ -15,4 +15,6 @@ Gamemode Use
 #include <TDialog>
 ```
 
-Credits: SA-MP Team
+
+# Credits
+  • SA-MP Team
