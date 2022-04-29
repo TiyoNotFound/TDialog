@@ -3,6 +3,9 @@ Simple dialog usage and functions.
 This is created for entertainment and testing a 
 framework.
 
+# Wiki
+You can read the github [wiki]
+
 # Features
 Script Features:
     • Simple to use                
