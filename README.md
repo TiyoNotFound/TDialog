@@ -4,8 +4,8 @@ This is created for entertainment and testing a
 framework.
 
 # Features
-[Script Features:]
-  • Simple to use                
+Script Features:
+    • Simple to use                
   • Allign your code                       
   • Can use all types of cmd processor                    
   • Can add formats or strings
