@@ -48,4 +48,4 @@ Gamemode Use
 
 
 # Credits
-  • SA-MP Team
+  • TiyoNotFound
