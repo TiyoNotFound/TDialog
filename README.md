@@ -60,6 +60,16 @@ public OnPlayerConnect(playerid)
 }
 ```
 
+# Replacements
+```pawn
+DIALOG_STYLE_MSGBOX          --> TDIALOG_MSG
+DIALOG_STYLE_LIST            --> TDIALOG_LIST
+DIALOG_STYLE_TABLIST         --> TDIALOG_TABLIST
+DIALOG_STYLE_TABLIST_HEADERS --> TDIALOG_TABLIST_HEAD
+DIALOG_STYLE_INPUT           --> TDIALOG_INPUT
+DIALOG_STYLE_PASSWORD        --> TDIALOG_PASS
+```
+
 # Callbacks
 ```pawn
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
