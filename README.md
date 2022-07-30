@@ -1,54 +1,61 @@
 # TDialog
-Simple dialog usage and functions.
-This is created for entertainment and testing a 
-framework.
+TDialog helps scripters organize their scripts and optimize dialogs. It has new features that are not in the normal samp-team dialog. One of the new features is that there is no need to declare a format function to include variables and other strings inside it.
 
-# Wiki
-You can read the github [wiki]
-
-# Features
-Script Features:
-    • Simple to use                
-  • Allign your code                       
-  • Can use all types of cmd processor                    
-  • Can add formats or strings
-
-# Functions
-All different types of dialog
+# Installation
+Simply install to your project:                  
+Include in your code and begin using the library:
 ```pawn
-TDialog_MsgBox(playerid, dialogid, description[]);
-TDialog_List(playerid, dialogid, description[]);
-TDialog_Tablist(playerid, dialogid, description[]);
-TDialog_TablistHeaders(playerid, dialogid, description[]);
-TDialog_Input(playerid, dialogid, description[]);
-TDialog_Password(playerid, dialogid, description[]);
+#include <TDialog>
 ```
 
-Executor Functions
+# Functions                      
+
 ```pawn
-TDialog_Show(playerid, dialogid, title[], button1[], button2[]);
+/*
+PARAMS:  
+header[] - The header of a dialog to show it.
+{Float,_}:... - The variable to store the data  
+  
+RETURNS:  
+1 on success, otherwise 0  
+*/
+TDialog_SetHeader(const header[], {Float,_}:...);
+
+/*
+PARAMS:  
+info[] - The info of a dialog to show it.
+{Float,_}:... - The variable to store the data  
+  
+RETURNS:  
+1 on success, otherwise 0  
+*/
+TDialog_SetInfo(const info[], {Float,_}:...);
+
+/*
+PARAMS:  
+playerid - The player to see the dialog.
+dialogid - The dialogid to execute.
+dialog_type - The dialog type of dialog (TDIALOG_MSG, TDIALOG_LIST, TDIALOG_TABLIST, TDIALOG_TABLIST_HEAD, TDIALOG_INPUT, TDIALOG_PASS)
+button0[] - The button0 of a dialog to show it.
+button1[] - The button1 of a dialog to show it.
+  
+RETURNS:  
+1 on success, otherwise 0  
+*/
+TDialog_Show(playerid, dialogid, dialog_type, const button0[], const button1[]);
 ```
-Executor Callback
+# Usage
 ```pawn
-public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+#include <a_samp>
+#include <TDialog>
+
+public OnPlayerConnect(playerid)
 {
+    new name[MAX_PLAYER_NAME];
+    GetPlayerName(playerid, name, sizeof(name));
+    TDialog_SetHeader("%s", name);
+    TDialog_SetInfo("Hello there.");
+    TDialog_Show(playerid, 0, TDIALOG_MSG, "Ok", ""); 
     return 1;
 }
 ```
-# Usage
-Filterscript Use
-```pawn
-#define TDialog_FILTERSCRIPT
-#include <TDialog>
-
-
-```
-Gamemode Use
-```pawn
-#define TDialog_GAMEMODE
-#include <TDialog>
-```
-
-
-# Credits
-  • TiyoNotFound
