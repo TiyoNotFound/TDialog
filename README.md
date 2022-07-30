@@ -59,3 +59,10 @@ public OnPlayerConnect(playerid)
     return 1;
 }
 ```
+
+# Callbacks
+```pawn
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+    return 1;
+}
