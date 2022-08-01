@@ -18,12 +18,23 @@
     
     Special Thanks:
     - Emmet for #emit stuff
-    - Zaxx 
     
 */
-
+#define TDialogCall:%0(%1) \
+	forward tdialog_%0(%1); public tdialog_%0(%1)
+                 
+#define TDialog_Show(%0,%1, \
+	TDialog_Open(%0, #%1,
+	
+	
+#if !defined isnull
+	#define isnull(%1) \
+		((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
+#endif
+              
 #define TDIALOG_CAPTION_LENGTH (32 * 2)
 #define TDIALOG_INFO_LENGTH (4086)
+#define TDIALOG_CALLBACK_LENGTH (24)
 
 enum
 {
@@ -38,23 +49,27 @@ enum
 enum E_TDIALOG
 {
     E_TDIALOG_HEADER[TDIALOG_CAPTION_LENGTH],
-    E_TDIALOG_INFO[TDIALOG_INFO_LENGTH]
+    E_TDIALOG_INFO[TDIALOG_INFO_LENGTH],
+    E_TDIALOG_CALL[TDIALOG_CALLBACK_LENGTH]
 };
 static E_TDDATA[E_TDIALOG];
+static TDialogFunction[MAX_PLAYERS][32 char];
 
-stock TDialog_Show(playerid, dialogid, dialog_type, button0[], button1[])
+stock TDialog_Open(playerid, const function[], dialog_type, button0[], button1[])
 {
     
     switch(dialog_type) {
-        case TDIALOG_MSG: ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
-        case TDIALOG_LIST: ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_LIST, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
-        case TDIALOG_TABLIST: ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
-        case TDIALOG_TABLIST_HEAD: ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
-        case TDIALOG_INPUT: ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_INPUT, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
-        case TDIALOG_PASS: ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_PASSWORD, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
+        case TDIALOG_MSG: ShowPlayerDialog(playerid, 57200, DIALOG_STYLE_MSGBOX, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
+        case TDIALOG_LIST: ShowPlayerDialog(playerid, 57200, DIALOG_STYLE_LIST, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
+        case TDIALOG_TABLIST: ShowPlayerDialog(playerid, 57200, DIALOG_STYLE_TABLIST, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
+        case TDIALOG_TABLIST_HEAD: ShowPlayerDialog(playerid, 57200, DIALOG_STYLE_TABLIST_HEADERS, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
+        case TDIALOG_INPUT: ShowPlayerDialog(playerid, 57200, DIALOG_STYLE_INPUT, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
+        case TDIALOG_PASS: ShowPlayerDialog(playerid, 57200, DIALOG_STYLE_PASSWORD, E_TDDATA[E_TDIALOG_HEADER], E_TDDATA[E_TDIALOG_INFO], button0, button1);
     }
     E_TDDATA[E_TDIALOG_HEADER][0] = EOS;
     E_TDDATA[E_TDIALOG_INFO][0] = EOS;
+    
+    strpack(TDialogFunction[playerid], function, 32 char);
     return 1;
 }
 
@@ -130,3 +145,38 @@ stock TDialog_SetInfo(const info[], {Float,_}:...)
     else format(E_TDDATA[E_TDIALOG_INFO], 4096, info);
     return 1;
 }
+
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{   
+    static 
+        TDialogCell = cellmax;
+        
+    if (dialogid == 57200 && strlen(TDialogFunction[playerid]) > 0)
+	{
+		new
+		    func[40];
+
+		strcat(func, "tdialog_");
+		strcat(func, TDialogFunction[playerid]);
+		
+	    CallLocalFunction(func, "ddds", playerid, response, listitem, (!inputtext[0]) ? ("\1") : (inputtext));
+	    
+	}
+    #if defined TD_OnDialogResponse
+        TD_OnDialogResponse(playerid, dialogid, response, listitem, inputtext);
+    #else
+		return 0;
+	#endif
+}
+
+#if defined _ALS_OnDialogResponse
+	#undef OnDialogResponse
+#else
+	#define _ALS_OnDialogResponse
+#endif
+
+#define OnDialogResponse TD_OnDialogResponse
+
+#if defined TD_OnDialogResponse
+	forward TD_OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]);
+#endif
