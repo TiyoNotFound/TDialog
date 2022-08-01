@@ -36,7 +36,7 @@ TDialog_SetInfo(function[], const info[], {Float,_}:...);
 /*
 PARAMS:  
 playerid - The player to see the dialog.
-dialogid - The dialogid to execute.
+function[] - The function of dialog to show.
 dialog_type - The dialog type of dialog (TDIALOG_MSG, TDIALOG_LIST, TDIALOG_TABLIST, TDIALOG_TABLIST_HEAD, TDIALOG_INPUT, TDIALOG_PASS)
 button0[] - The button0 of a dialog to show it.
 button1[] - The button1 of a dialog to show it.
