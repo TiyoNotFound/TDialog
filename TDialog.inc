@@ -18,7 +18,6 @@
     
     Special Thanks:
     - Emmet for #emit stuff
-    - EasyDialog for idea
     
 */
 #define TDialogCall:%0(%1) \
@@ -26,12 +25,15 @@
                  
 #define TDialog_Show(%0,%1, \
 	TDialog_Open(%0, #%1,
+
+#define TDialog_SetHeader(%0, \
+	TDialog_SH(#%0,
+	
+#define TDialog_SetInfo(%0, \
+	TDialog_SI(#%0,
 	
 	
-#if !defined isnull
-	#define isnull(%1) \
-		((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
-#endif
+
               
 #define TDIALOG_CAPTION_LENGTH (32 * 2)
 #define TDIALOG_INFO_LENGTH (4086)
@@ -54,7 +56,7 @@ enum E_TDIALOG
     E_TDIALOG_CALL[TDIALOG_CALLBACK_LENGTH]
 };
 static E_TDDATA[E_TDIALOG];
-static TDialogFunction[MAX_PLAYERS][32 char];
+static TDialogFunction[32 char];
 
 stock TDialog_Open(playerid, const function[], dialog_type, button0[], button1[])
 {
@@ -70,92 +72,100 @@ stock TDialog_Open(playerid, const function[], dialog_type, button0[], button1[]
     E_TDDATA[E_TDIALOG_HEADER][0] = EOS;
     E_TDDATA[E_TDIALOG_INFO][0] = EOS;
     
-    strpack(TDialogFunction[playerid], function, 32 char);
+    strpack(TDialogFunction, function, 32 char);
     return 1;
 }
 
-stock TDialog_SetHeader(const header[], {Float,_}:...)
+stock TDialog_SH(function[], const header[], {Float,_}:...)
 {
     static 
         string[64],
         args;
-    if ((args = numargs()) > 1)
-    {
-        while(--args >= 1)
-		{
-			#emit LCTRL 	5
-			#emit LOAD.alt 	args
-			#emit SHL.C.alt 2
-			#emit ADD.C 	12
-			#emit ADD
-			#emit LOAD.I
+    
+    if(!strcmp(function, TDialogFunction, true)) {
+	    if ((args = numargs()) > 2)
+	    {
+	        while(--args >= 2)
+			{
+				#emit LCTRL 	5
+				#emit LOAD.alt 	args
+				#emit SHL.C.alt 2
+				#emit ADD.C 	12
+				#emit ADD
+				#emit LOAD.I
+				#emit PUSH.pri
+			}
+	        #emit PUSH.S header
+			#emit PUSH.C 64
+			#emit PUSH.C string
+	
+			#emit LOAD.S.pri 8
+			#emit CONST.alt 16
+			#emit SUB
 			#emit PUSH.pri
+	
+			#emit SYSREQ.C format
+			#emit LCTRL 5
+			#emit SCTRL 4
+			
+		    format(E_TDDATA[E_TDIALOG_HEADER], 64, string);
+		    #emit RETN
 		}
-        #emit PUSH.S header
-		#emit PUSH.C 64
-		#emit PUSH.C string
-
-		#emit LOAD.S.pri 8
-		#emit CONST.alt 16
-		#emit SUB
-		#emit PUSH.pri
-
-		#emit SYSREQ.C format
-		#emit LCTRL 5
-		#emit SCTRL 4
-		
-	    format(E_TDDATA[E_TDIALOG_HEADER], 64, string);
-	    #emit RETN
-    }
-    else format(E_TDDATA[E_TDIALOG_HEADER], 64, header);
+		else format(E_TDDATA[E_TDIALOG_HEADER], 64, header);  
+	}
+	else print("[TDialog]: Unknown Dialog Function.");
     return 1; 
 }
 
-stock TDialog_SetInfo(const info[], {Float,_}:...)
+stock TDialog_SI(const function[], const info[], {Float,_}:...)
 {
     static
         string[4096],
         args;
-    if((args = numargs()) > 1)
-    {
-        while(--args >= 1)
-		{
-			#emit LCTRL 	5
-			#emit LOAD.alt 	args
-			#emit SHL.C.alt 2
-			#emit ADD.C 	12
-			#emit ADD
-			#emit LOAD.I
+    if(!strcmp(function, TDialogFunction, true)) {
+	    if((args = numargs()) > 2)
+	    {
+	        while(--args >= 2)
+			{
+				#emit LCTRL 	5
+				#emit LOAD.alt 	args
+				#emit SHL.C.alt 2
+				#emit ADD.C 	12
+				#emit ADD
+				#emit LOAD.I
+				#emit PUSH.pri
+			}
+	        #emit PUSH.S info
+			#emit PUSH.C 4096
+			#emit PUSH.C string
+	
+			#emit LOAD.S.pri 8
+			#emit CONST.alt 16
+			#emit SUB
 			#emit PUSH.pri
-		}
-        #emit PUSH.S info
-		#emit PUSH.C 4096
-		#emit PUSH.C string
-
-		#emit LOAD.S.pri 8
-		#emit CONST.alt 16
-		#emit SUB
-		#emit PUSH.pri
-
-		#emit SYSREQ.C format
-		#emit LCTRL 5
-		#emit SCTRL 4
-		format(E_TDDATA[E_TDIALOG_INFO], 4096, string);
-		#emit RETN
+	
+			#emit SYSREQ.C format
+			#emit LCTRL 5
+			#emit SCTRL 4
+			format(E_TDDATA[E_TDIALOG_INFO], 4096, string);
+			#emit RETN
+	    }
+	    else format(E_TDDATA[E_TDIALOG_INFO], 4096, info);
     }
-    else format(E_TDDATA[E_TDIALOG_INFO], 4096, info);
+    else print("[TDialog]: Unknown Dialog Function.");
     return 1;
 }
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{        
-    if (dialogid == 57200 && strlen(TDialogFunction[playerid]) > 0)
+{
+        
+    if (dialogid == 57200 && strlen(TDialogFunction) > 0)
 	{
 		new
 		    func[40];
 
 		strcat(func, "tdialog_");
-		strcat(func, TDialogFunction[playerid]);
+		strcat(func, TDialogFunction);
 		
 	    CallLocalFunction(func, "ddds", playerid, response, listitem, (!inputtext[0]) ? ("\1") : (inputtext));
 	    
