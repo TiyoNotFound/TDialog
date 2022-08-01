@@ -66,6 +66,7 @@ TDialogCall:Test(playerid, response, listitem, inputtext[])
     // Code
     return 1;
 }
+```
 
 # Replacements
 ```pawn
