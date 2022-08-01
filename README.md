@@ -55,10 +55,17 @@ public OnPlayerConnect(playerid)
     GetPlayerName(playerid, name, sizeof(name));
     TDialog_SetHeader("%s", name);
     TDialog_SetInfo("Hello there.");
-    TDialog_Show(playerid, 0, TDIALOG_MSG, "Ok", ""); 
+    TDialog_Show(playerid, Test, TDIALOG_MSG, "Ok", ""); 
     return 1;
 }
 ```
+# Callbacks
+```pawn
+TDialogCall:Test(playerid, response, listitem, inputtext[])
+{
+    // Code
+    return 1;
+}
 
 # Replacements
 ```pawn
@@ -69,10 +76,3 @@ DIALOG_STYLE_TABLIST_HEADERS --> TDIALOG_TABLIST_HEAD
 DIALOG_STYLE_INPUT           --> TDIALOG_INPUT
 DIALOG_STYLE_PASSWORD        --> TDIALOG_PASS
 ```
-
-# Callbacks
-```pawn
-public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-    return 1;
-}
