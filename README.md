@@ -13,23 +13,25 @@ Include in your code and begin using the library:
 ```pawn
 /*
 PARAMS:  
+function[] - The function of a dialog to show.
 header[] - The header of a dialog to show it.
 {Float,_}:... - The variable to store the data  
   
 RETURNS:  
 1 on success, otherwise 0  
 */
-TDialog_SetHeader(const header[], {Float,_}:...);
+TDialog_SetHeader(function[], const header[], {Float,_}:...);
 
 /*
-PARAMS:  
+PARAMS:
+function[] - The function of a dialog to show.
 info[] - The info of a dialog to show it.
 {Float,_}:... - The variable to store the data  
   
 RETURNS:  
 1 on success, otherwise 0  
 */
-TDialog_SetInfo(const info[], {Float,_}:...);
+TDialog_SetInfo(function[], const info[], {Float,_}:...);
 
 /*
 PARAMS:  
@@ -42,7 +44,7 @@ button1[] - The button1 of a dialog to show it.
 RETURNS:  
 1 on success, otherwise 0  
 */
-TDialog_Show(playerid, dialogid, dialog_type, const button0[], const button1[]);
+TDialog_Show(playerid, const function[], dialog_type, const button0[], const button1[]);
 ```
 # Usage
 ```pawn
@@ -53,8 +55,8 @@ public OnPlayerConnect(playerid)
 {
     new name[MAX_PLAYER_NAME];
     GetPlayerName(playerid, name, sizeof(name));
-    TDialog_SetHeader("%s", name);
-    TDialog_SetInfo("Hello there.");
+    TDialog_SetHeader(Test, "%s", name);
+    TDialog_SetInfo(Test, "Hello there.");
     TDialog_Show(playerid, Test, TDIALOG_MSG, "Ok", ""); 
     return 1;
 }
