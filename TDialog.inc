@@ -18,6 +18,7 @@
     
     Special Thanks:
     - Emmet for #emit stuff
+    - EasyDialog for idea
     
 */
 #define TDialogCall:%0(%1) \
@@ -147,10 +148,7 @@ stock TDialog_SetInfo(const info[], {Float,_}:...)
 }
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{   
-    static 
-        TDialogCell = cellmax;
-        
+{        
     if (dialogid == 57200 && strlen(TDialogFunction[playerid]) > 0)
 	{
 		new
